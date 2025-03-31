@@ -1,0 +1,54 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const app = express();
+
+// Middleware
+app.use(bodyParser.json());
+
+// Créer une connexion à la base de données MySQL
+const db = mysql.createConnection({
+    host: 'localhost', // Remplacez par votre hôte
+    user: 'root', // Votre utilisateur MySQL
+    password: 'votre_mot_de_passe', // Votre mot de passe
+    database: 'cyna_saas_db' // Le nom de votre base de données
+});
+
+// Vérifier la connexion
+db.connect(err => {
+    if (err) {
+        console.log('Erreur de connexion à la base de données:', err);
+        return;
+    }
+    console.log('Connecté à la base de données MySQL');
+});
+
+// Endpoint pour récupérer tous les utilisateurs
+app.get('/utilisateurs', (req, res) => {
+    const sql = 'SELECT * FROM utilisateurs';
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.log('Erreur de requête:', err);
+            return res.status(500).send('Erreur interne du serveur');
+        }
+        res.json(result);
+    });
+});
+
+// Endpoint pour ajouter un utilisateur
+app.post('/utilisateurs', (req, res) => {
+    const { nom, email, mot_de_passe } = req.body;
+    const sql = 'INSERT INTO utilisateurs (nom, email, mot_de_passe) VALUES (?, ?, ?)';
+    db.query(sql, [nom, email, mot_de_passe], (err, result) => {
+        if (err) {
+            console.log('Erreur de requête:', err);
+            return res.status(500).send('Erreur interne du serveur');
+        }
+        res.status(201).send('Utilisateur ajouté');
+    });
+});
+
+// Lancer le serveur sur le port 3000
+app.listen(3000, () => {
+    console.log('Serveur en écoute sur le port 3000');
+});

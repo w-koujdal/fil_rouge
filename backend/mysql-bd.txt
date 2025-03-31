@@ -1,0 +1,45 @@
+-- Créer la table Utilisateurs
+CREATE TABLE utilisateurs (
+    id_utilisateur SERIAL PRIMARY KEY,
+    nom VARCHAR(100),
+    email VARCHAR(100) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    role VARCHAR(50),
+    adresse_facturation TEXT
+);
+
+-- Créer la table Produits
+CREATE TABLE produits (
+    id_produit SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description TEXT,
+    prix DECIMAL(10, 2) NOT NULL,
+    disponibilite BOOLEAN DEFAULT TRUE,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Créer la table Commandes
+CREATE TABLE commandes (
+    id_commande SERIAL PRIMARY KEY,
+    id_utilisateur INT REFERENCES utilisateurs(id_utilisateur),
+    date_commande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    statut VARCHAR(50) NOT NULL,
+    montant_total DECIMAL(10, 2) NOT NULL
+);
+
+-- Créer la table Détails de la commande
+CREATE TABLE details_commande (
+    id_detail SERIAL PRIMARY KEY,
+    id_commande INT REFERENCES commandes(id_commande),
+    id_produit INT REFERENCES produits(id_produit),
+    quantite INT NOT NULL
+);
+
+-- Créer la table Paiements
+CREATE TABLE paiements (
+    id_paiement SERIAL PRIMARY KEY,
+    id_commande INT REFERENCES commandes(id_commande),
+    montant DECIMAL(10, 2) NOT NULL,
+    statut_paiement VARCHAR(50) NOT NULL,
+    date_paiement TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
