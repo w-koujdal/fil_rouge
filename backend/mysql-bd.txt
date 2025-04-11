@@ -1,3 +1,5 @@
+cyna_saas_db
+
 -- Créer la table Utilisateurs
 CREATE TABLE utilisateurs (
     id_utilisateur SERIAL PRIMARY KEY,
